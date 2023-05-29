@@ -1,36 +1,35 @@
-import React, { Component } from 'react';
+import React ,{ useState } from 'react';
 import Section from './SectionTitle';
 import Statistics from './Statistics';
 import FeedbackOptions from './FeedbackOptions';
 import Notification from './Notification';
 
-export class Feedbackwidget extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+const Feedbackwidget = () => {
+
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const incrementFeedback = type => {
+    switch (type) {
+      case 'good' : setGood((prev) => prev +1); break
+      case 'neutral' : setNeutral((prev) => prev +1); break
+      case 'bad' : setBad((prev) => prev +1); break
+      default: break;
+    }
   };
 
-  incrementFeedback = type => {
-    this.setState(prevState => ({
-      [type]: prevState[type] + 1,
-    }));
-  };
+  let total = good + neutral + bad;
 
-  countPositiveFeedbackPercentage = () => {
-    const { good, neutral, bad } = this.state;
-    let total = good + neutral + bad;
+  const countPositiveFeedbackPercentage = () => {
     const percentage = total === 0 ? 0 : Math.round((good / total) * 100);
     return percentage;
   };
 
-  render() {
-    const { good, neutral, bad } = this.state;
-    let total = good + neutral + bad;
     return (
       <div>
         <Section title={'Please leave a feedback'}>
-          <FeedbackOptions options={['good', 'neutral', 'bad']} onLeaveFeedback={this.incrementFeedback} />
+          <FeedbackOptions options={['good', 'neutral', 'bad']} onLeaveFeedback={incrementFeedback} />
         </Section>
         {total > 0 ? (
           <Section title={'Statistics'}>
@@ -39,7 +38,7 @@ export class Feedbackwidget extends Component {
               neutral={neutral}
               bad={bad}
               total={total}
-              positivePercentage={this.countPositiveFeedbackPercentage()}
+              positivePercentage={countPositiveFeedbackPercentage()}
             />
           </Section>
         ) : (
@@ -48,6 +47,5 @@ export class Feedbackwidget extends Component {
       </div>
     );
   }
-}
 
 export default Feedbackwidget;
